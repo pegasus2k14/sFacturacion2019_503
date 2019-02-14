@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
-
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -9,11 +8,17 @@
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">admin</property>
     <!-- Propiedades adicionales -->
-     <!--Para que muestre en consola el codigo SQL de las consultas que realicemos-->
-     <property name="hibernate.show_sql">true</property>  
-     <!--formateamos la sentencia SQL que mostremos en consola para que sea mas legible -->   
-     <property name="hibernate.format_sql">true</property>
-     <!--Indicamos el alcance de Sesion -->
-     <property name="hibernate.current_session_context_class">thread</property>
+    <!--Para que muestre en consola el codigo SQL de las consultas que realicemos-->
+    <property name="hibernate.show_sql">true</property>
+    <!--formateamos la sentencia SQL que mostremos en consola para que sea mas legible -->
+    <property name="hibernate.format_sql">true</property>
+    <!--Indicamos el alcance de Sesion -->
+    <property name="hibernate.current_session_context_class">thread</property>
+    <mapping class="com.model.Cliente"/>
+    <mapping class="com.model.Detallefactura"/>
+    <mapping class="com.model.Factura"/>
+    <mapping class="com.model.Producto"/>
+    <mapping class="com.model.Usuario"/>
+    <mapping class="com.model.Vendedor"/>
   </session-factory>
 </hibernate-configuration>

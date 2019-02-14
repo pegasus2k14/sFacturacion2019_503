@@ -1,7 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -9,6 +12,88 @@
 
             <ui:define name="content">
                 <h1>Datos del Cliente</h1>
+                <!--Boton para levantar el Dialog de insercion -->
+                <h:form>
+                    <p:commandButton value="Nuevo Cliente" actionListener="#{clienteController.prepararNuevoCliente()}"  
+                                     update=":frmNuevoCliente"  oncomplete="PF('dialogNuevoCliente').show();"/>
+                </h:form>
+                
+                <!--Formulario para Listar modificar y elimar los clientes-->
+                <h:form id="frmMostrarClientes">
+                    <p:dataTable id="tblClientes" paginator="true" paginatorPosition="top"
+                                 value="#{clienteController.listCliente}" var="clienteItem"
+                                 emptyMessage="No hay clientes registrados">
+                        <p:column headerText="Codigo" >
+                            <h:outputText value="#{clienteItem.codCliente}"/>
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{clienteItem.nombres} #{clienteItem.apellidos}"/>
+                        </p:column>
+                        <p:column headerText="Dirección">
+                            <h:outputText value="#{clienteItem.direccion}"/>
+                        </p:column>
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dialogModificarCliente').show();" 
+                                             update=":frmModificarCliente">
+                                                 
+                                <f:setPropertyActionListener target="#{clienteController.cliente}" value="#{clienteItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dialogeliminarCliente').show();"
+                                             update=":frmEliminarCliente">
+                                <f:setPropertyActionListener target="#{clienteController.cliente}" value="#{clienteItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                
+                <!--Dialog con Formulario para agregar nuevos clientes -->
+                <h:form id="frmNuevoCliente">
+                    <p:dialog id="dlgNuevoCliente" widgetVar="dialogNuevoCliente" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{clienteController.cliente.nombres}"/>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{clienteController.cliente.apellidos}"/>
+                            <p:outputLabel value="Direccion:"/>
+                            <p:inputText value="#{clienteController.cliente.direccion}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Guardar" actionListener="#{clienteController.nuevoCliente()}"
+                                         update=":frmMostrarClientes:tblClientes"  oncomplete="PF('dialogNuevoCliente').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogNuevoCliente').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Dialog para modificar el cliente seleccionado -->
+                 <h:form id="frmModificarCliente">
+                    <p:dialog id="dlgModificarCliente" widgetVar="dialogModificarCliente" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{clienteController.cliente.nombres}"/>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{clienteController.cliente.apellidos}"/>
+                            <p:outputLabel value="Direccion:"/>
+                            <p:inputText value="#{clienteController.cliente.direccion}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Modificar" actionListener="#{clienteController.modificarCliente()}"
+                                         update=":frmMostrarClientes:tblClientes"  oncomplete="PF('dialogModificarCliente').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogModificarCliente').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario para confirmacion de la eliminacion -->
+                <h:form id="frmEliminarCliente">
+                    <p:dialog id="dlgEliminarCliente"  widgetVar="dialogeliminarCliente"
+                              resizable="false" modal="true" showEffect="explode" hideEffect="explode">
+                        <h:outputText value="Desea eliminar el Cliente?"/>
+                        <p:commandButton value="Si" actionListener="#{clienteController.eliminarcliente()}"
+                                         update=":frmMostrarClientes:tblClientes" 
+                                         oncomplete="PF('dialogeliminarCliente').hide();"/>
+                        <p:commandButton value="No"  
+                                         onclick="PF('dialogeliminarCliente').hide();"/>
+                    </p:dialog>
+                </h:form>
             </ui:define>
 
         </ui:composition>

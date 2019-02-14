@@ -1,7 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -9,6 +12,108 @@
 
             <ui:define name="content">
                 <h1>Datos del Producto</h1>
+                <!--Boton para levantar el Dialog de insercion -->
+                <h:form>
+                    <p:commandButton value="Nuevo Producto" actionListener="#{productoController.prepararNuevoProducto()}"  
+                                     update=":frmNuevoProducto"  oncomplete="PF('dialogNuevoProducto').show();"/>
+                </h:form>
+                
+                <!--Formulario para Listar modificar y elimar los Productos-->
+                <h:form id="frmMostrarProductos">
+                    <p:dataTable id="tblProductos" paginator="true" paginatorPosition="top"
+                                 value="#{productoController.listProducto}" var="productoItem"
+                                 emptyMessage="No hay productos registrados">
+                        <p:column headerText="Codigo" >
+                            <h:outputText value="#{productoItem.codProducto}"/>
+                        </p:column>
+                        <p:column headerText="Nombre producto">
+                            <h:outputText value="#{productoItem.nombreProducto}"/>
+                        </p:column>
+                        <p:column headerText="Precio de venta">
+                            <h:outputText value="#{productoItem.precioVenta}"/>
+                        </p:column>
+                        <p:column headerText="Stock Minimo">
+                            <h:outputText value="#{productoItem.stockMinimo}"/>
+                            Unidades
+                        </p:column>
+                        <p:column headerText="Stock actual">
+                            <h:outputText value="#{productoItem.stockActual}"/>
+                            Unidades
+                        </p:column>
+                        <p:column headerText="Codigo de Barra">
+                            <h:outputText value="#{productoItem.codBarra}"/>
+                        </p:column>
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dialogModificarProducto').show();" 
+                                             update=":frmModificarProducto">
+                                                 
+                                <f:setPropertyActionListener target="#{productoController.producto}" value="#{productoItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dialogeliminarProducto').show();"
+                                             update=":frmEliminarProducto">
+                                <f:setPropertyActionListener target="#{productoController.producto}" value="#{productoItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                
+                <!--Dialog con Formulario para agregar nuevos Productos -->
+                <h:form id="frmNuevoProducto">
+                    <p:dialog id="dlgNuevoProducto" widgetVar="dialogNuevoProducto" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombre Producto:"/>
+                            <p:inputText value="#{productoController.producto.nombreProducto}"/>
+                            <p:outputLabel value="Precio de venta:"/>
+                            <p:inputText value="#{productoController.producto.precioVenta}"/>
+                            <p:outputLabel value="Stock minimo"/>
+                            <p:inputText value="#{productoController.producto.stockMinimo}"/>
+                            <p:outputLabel value="Stock actual"/>
+                            <p:inputText value="#{productoController.producto.stockActual}"/>
+                            <p:outputLabel value="Codigo de barra:"/>
+                            <p:inputText value="#{productoController.producto.codBarra}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Guardar" actionListener="#{productoController.nuevoProducto()}"
+                                         update=":frmMostrarProductos:tblProductos"  oncomplete="PF('dialogNuevoProducto').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogNuevoProducto').hide();"/>
+                    </p:dialog>
+                </h:form>
+                
+                <!--Dialog para modificar el Vendedor seleccionado -->
+                 <h:form id="frmModificarProducto">
+                    <p:dialog id="dlgModificarProducto" widgetVar="dialogModificarProducto" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombre Producto:"/>
+                            <p:inputText value="#{productoController.producto.nombreProducto}"/>
+                            <p:outputLabel value="Precio de venta:"/>
+                            <p:inputText value="#{productoController.producto.precioVenta}"/>
+                            <p:outputLabel value="Stock minimo"/>
+                            <p:inputText value="#{productoController.producto.stockMinimo}"/>
+                            <p:outputLabel value="Stock actual"/>
+                            <p:inputText value="#{productoController.producto.stockActual}"/>
+                            <p:outputLabel value="Codigo de barra:"/>
+                            <p:inputText value="#{productoController.producto.codBarra}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Modificar" actionListener="#{productoController.modificarProducto()}"
+                                         update=":frmMostrarProductos:tblProductos"  oncomplete="PF('dialogModificarProducto').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogModificarProducto').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario para confirmacion de la eliminacion -->
+                <h:form id="frmEliminarProducto">
+                    <p:dialog id="dlgEliminarProducto"  widgetVar="dialogeliminarProducto"
+                              resizable="false" modal="true" showEffect="explode" hideEffect="explode">
+                        <h:outputText value="Desea eliminar el Producto?"/>
+                        <p:commandButton value="Si" actionListener="#{productoController.eliminarProducto()}"
+                                         update=":frmMostrarProductos:tblProductos" 
+                                         oncomplete="PF('dialogeliminarProducto').hide();"/>
+                        <p:commandButton value="No"  
+                                         onclick="PF('dialogeliminarProducto').hide();"/>
+                    </p:dialog>
+                </h:form>
             </ui:define>
 
         </ui:composition>

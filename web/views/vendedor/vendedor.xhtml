@@ -1,14 +1,113 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
         <ui:composition template="./../../plantilla/template.xhtml">
 
             <ui:define name="content">
-                <h1>Datos del Vendedor</h1>
+                 <h1>Datos del Vendedor</h1>
+                <!--Boton para levantar el Dialog de insercion -->
+                <h:form>
+                    <p:commandButton value="Nuevo Vendedor" actionListener="#{vendedorController.prepararNuevoVendedor()}"  
+                                     update=":frmNuevoVendedor"  oncomplete="PF('dialogNuevoVendedor').show();"/>
+                </h:form>
+                
+                <!--Formulario para Listar modificar y elimar los clientes-->
+                <h:form id="frmMostrarVendedores">
+                    <p:dataTable id="tblVendedores" paginator="true" paginatorPosition="top"
+                                 value="#{vendedorController.listVendedor}" var="vendedorItem"
+                                 emptyMessage="No hay vendedores registrados">
+                        <p:column headerText="Codigo" >
+                            <h:outputText value="#{vendedorItem.codVendedor}"/>
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{vendedorItem.nombres} #{vendedorItem.apellidos}"/>
+                        </p:column>
+                        <p:column headerText="DUI">
+                            <h:outputText value="#{vendedorItem.dui}"/>
+                        </p:column>
+                        <p:column headerText="Telefono">
+                            <h:outputText value="#{vendedorItem.celular}"/>
+                        </p:column>
+                        <p:column headerText="Dirección">
+                            <h:outputText value="#{vendedorItem.direccion}"/>
+                        </p:column>
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dialogModificarVendedor').show();" 
+                                             update=":frmModificarVendedor">
+                                                 
+                                <f:setPropertyActionListener target="#{vendedorController.vendedor}" value="#{vendedorItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dialogeliminarVendedor').show();"
+                                             update=":frmEliminarVendedor">
+                                <f:setPropertyActionListener target="#{vendedorController.vendedor}" value="#{vendedorItem}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                
+                <!--Dialog con Formulario para agregar nuevos Vendedor -->
+                <h:form id="frmNuevoVendedor">
+                    <p:dialog id="dlgNuevoVendedor" widgetVar="dialogNuevoVendedor" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{vendedorController.vendedor.nombres}"/>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{vendedorController.vendedor.apellidos}"/>
+                            <p:outputLabel value="DUI"/>
+                            <p:inputText value="#{vendedorController.vendedor.dui}"/>
+                            <p:outputLabel value="Telefono"/>
+                            <p:inputText value="#{vendedorController.vendedor.celular}"/>
+                            <p:outputLabel value="Direccion:"/>
+                            <p:inputText value="#{vendedorController.vendedor.direccion}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Guardar" actionListener="#{vendedorController.nuevoVendedor()}"
+                                         update=":frmMostrarVendedores:tblVendedores"  oncomplete="PF('dialogNuevoVendedor').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogNuevoVendedor').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Dialog para modificar el Vendedor seleccionado -->
+                 <h:form id="frmModificarVendedor">
+                    <p:dialog id="dlgModificarVendedor" widgetVar="dialogModificarVendedor" resizable="false" modal="true"
+                              showEffect="explode" hideEffect="explode">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{vendedorController.vendedor.nombres}"/>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{vendedorController.vendedor.apellidos}"/>
+                            <p:outputLabel value="DUI"/>
+                            <p:inputText value="#{vendedorController.vendedor.dui}"/>
+                            <p:outputLabel value="Telefono"/>
+                            <p:inputText value="#{vendedorController.vendedor.celular}"/>
+                            <p:outputLabel value="Direccion:"/>
+                            <p:inputText value="#{vendedorController.vendedor.direccion}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Modificar" actionListener="#{vendedorController.modificarVendedor()}"
+                                         update=":frmMostrarVendedores:tblVendedores"  oncomplete="PF('dialogModificarVendedor').hide();"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dialogModificarVendedor').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario para confirmacion de la eliminacion -->
+                <h:form id="frmEliminarVendedor">
+                    <p:dialog id="dlgEliminarVendedor"  widgetVar="dialogeliminarVendedor"
+                              resizable="false" modal="true" showEffect="explode" hideEffect="explode">
+                        <h:outputText value="Desea eliminar el Vendedor?"/>
+                        <p:commandButton value="Si" actionListener="#{vendedorController.eliminarVendedor()}"
+                                         update=":frmMostrarVendedores:tblVendedores" 
+                                         oncomplete="PF('dialogeliminarVendedor').hide();"/>
+                        <p:commandButton value="No"  
+                                         onclick="PF('dialogeliminarVendedor').hide();"/>
+                    </p:dialog>
+                </h:form>
             </ui:define>
 
         </ui:composition>
