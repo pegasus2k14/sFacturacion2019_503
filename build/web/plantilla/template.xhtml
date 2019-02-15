@@ -14,46 +14,51 @@
     </h:head>
 
     <h:body>
+        <div id="divGeneral">
+            <div id="top">
+                <ui:insert name="top"> <!--Top --> </ui:insert>
 
-        <div id="top">
-            <ui:insert name="top">Top</ui:insert>
-            <!--Componente Barra de Menu -->
-            <h:form>  
-                <p:menubar>
-                    <p:submenu label="Home" >
-                        <p:menuitem value="Inicio" outcome="/views/bienvenido" />
-                        <p:separator />
-                        <p:menuitem value="Salir" outcome="/index" />
-                    </p:submenu>
+                <h1>SISTEMA DE FACTURACION 503</h1>
 
-                    <p:submenu label="Cliente">
-                        <p:menuitem value="Ver y Editar"  outcome="/views/cliente/cliente" />
-                    </p:submenu>
+                <div id="MenuPrincipal">
+                    <!--Componente Barra de Menu -->
+                    <h:form>  
+                        <p:menubar>
+                            <p:submenu label="Home" >
+                                <p:menuitem value="Inicio" outcome="/views/bienvenido" />
+                                <p:separator />
+                                <p:menuitem value="Salir" outcome="/index" />
+                            </p:submenu>
 
-                    <p:submenu label="Vendedor">
-                        <p:menuitem value="Ver y Editar" outcome="/views/vendedor/vendedor" />
-                    </p:submenu>
+                            <p:submenu label="Cliente">
+                                <p:menuitem value="Ver y Editar"  outcome="/views/cliente/cliente" />
+                            </p:submenu>
 
-                    <p:submenu label="Producto">
-                        <p:menuitem value="Ver y Editar" outcome="/views/producto/producto" />
-                    </p:submenu>
-                    
-                    <p:submenu label="Venta">
-                        <p:menuitem value="Facturar" outcome="/views/venta/factura" />
-                    </p:submenu>
+                            <p:submenu label="Vendedor">
+                                <p:menuitem value="Ver y Editar" outcome="/views/vendedor/vendedor" />
+                            </p:submenu>
 
-                </p:menubar>
-            </h:form>
+                            <p:submenu label="Producto">
+                                <p:menuitem value="Ver y Editar" outcome="/views/producto/producto" />
+                            </p:submenu>
+
+                            <p:submenu label="Venta">
+                                <p:menuitem value="Facturar" outcome="/views/venta/factura" />
+                            </p:submenu>
+
+                        </p:menubar>
+                    </h:form>
+                </div>
+            </div>
+
+            <div id="content" class="center_content">
+                <ui:insert name="content">Content</ui:insert>
+            </div>
+
+            <div id="bottom">
+                <ui:insert name="bottom">&copy;Java 503 - Todos los derechos reservados 2019</ui:insert>
+            </div>
         </div>
-
-        <div id="content" class="center_content">
-            <ui:insert name="content">Content</ui:insert>
-        </div>
-
-        <div id="bottom">
-            <ui:insert name="bottom">&copy;Java 503 - Todos los derechos reservados 2019</ui:insert>
-        </div>
-
     </h:body>
 
 </html>
