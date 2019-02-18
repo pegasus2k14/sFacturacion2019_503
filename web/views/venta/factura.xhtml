@@ -13,12 +13,66 @@
                 <h2>REALIZAR VENTA</h2>
                 <h:form id="frmFactura">
                     <p:panel header="-*-" style="width: 900px; margin: 0 auto; text-align: center;">
-                        <p:layout id="capaDatosClienteFactura" style="width: 100%; height: 250px;">
+                        <p:layout id="capaDatosClienteFactura" style="width: 100%; height: 150px;">
+                            <!--Unidad de capa para datos del Cliente CENTER-->
                             <p:layoutUnit id="datosCliente" position="center" style="padding: 5px; text-align: justify;
                                           font-size: 14px; size: 300;">
-                                              
+                                <h:panelGrid id="gridBuscarCliente" columns="5">
+                                    <p:outputLabel value="Codigo cliente:" style="font-weight: bold"/>
+                                    <p:inputText size="12"/>
+                                    <p:commandButton value="..."/>
+                                    <p:outputLabel value="Fecha:" style="font-weight: bold"/>
+                                    <p:outputLabel value="Fecha del sistema"/>
+                                </h:panelGrid>
+                                <p:separator/>
+                                <h:panelGrid id="datosPersonalesCliente">
+                                    <p:outputLabel value="Nombre:" style="font-weight: bold"/>
+                                    <p:outputLabel id="lblNombreCliente" value=""/>
+                                    
+                                    <p:outputLabel value="Direccion:" style="font-weight: bold"/>
+                                    <p:outputLabel id="lblDireccion" value=""/>
+                                </h:panelGrid>
+                                
+                            </p:layoutUnit>
+                            <!-- Unidad de capa para datos de la factura EAST-->
+                            <p:layoutUnit id="datosFactura" position="east" style="padding: 5px; text-align: center;
+                                          font-size: 14px; size: 200;">
+                                <h:panelGrid columns="1" style="font-size: 24px; font-weight: bold; margin-top: 30px; margin: 0 auto">
+                                    FACTURA
+                                    <p:outputLabel value="000001"/>
+                                </h:panelGrid>            
                             </p:layoutUnit>
                         </p:layout>
+                        <p:separator/>
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="Codigo de Barra:"/>
+                            <p:inputText size="12" value=""/>
+                            <p:commandButton value="..."/>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <p:dataTable id="tabaDetalleFactura">
+                            <p:column headerText="Codigo Barra">
+                                
+                            </p:column>
+                            <p:column headerText="Producto">
+                                
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                
+                            </p:column>
+                            <p:column headerText="Total">
+                                
+                            </p:column>
+                        </p:dataTable>
+                        <p:outputLabel value="TOTAL VENTA:"/>
+                        $ <p:outputLabel value="Total a vender"/>
+                        <p:separator/>
+                        <p:commandButton value="Gravar venta" style="width: 150px; height: 35px;"/>
+                        <p:commandButton value="Imprimir" style="width: 150px; height: 35px;"/>
+                        <p:commandButton value="Cancelar" style="width: 150px; height: 35px;"/>
                     </p:panel>
                 </h:form>
             </ui:define>
