@@ -4,6 +4,7 @@ import com.dao.ClienteDao;
 import com.model.Cliente;
 import com.util.HibernateUtil;
 import java.util.List;
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 public class ClienteDaoImp implements ClienteDao{
@@ -111,6 +112,34 @@ public class ClienteDaoImp implements ClienteDao{
             }
         }
     }
+
+    //Metodo que retorna una instancia de Cliente en base a su ID
+    @Override
+    public Cliente obtenerClientePorCodigo(int codCliente) {
+        Cliente cliente = null;
+        Session session= null;
+        String hql = "select c from Cliente c where c.codCliente =:codCliente";
+        try{
+            //abrimos una sesion
+            session = HibernateUtil.getSessionFactory().openSession();
+            //Creamos la consulta
+            Query q = session.createQuery(hql);
+            //seteamos parametros
+            q.setParameter("codCliente", codCliente);
+            //Ejecutamos la consulta
+            cliente = (Cliente) q.uniqueResult();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+           if(session != null){
+                session.close();
+            } 
+        }
+        
+        return cliente;
+    }
+    
+    
     
     
 }

@@ -15,4 +15,7 @@ public interface ClienteDao {
     public void deleteCliente(Cliente cliente);
     
     
+    //Metodo que sera usado por la Clase controladora 'facturaController.java'
+    public Cliente obtenerClientePorCodigo(int codCliente);
+    
 }
