@@ -4,6 +4,7 @@ import com.dao.ProductoDao;
 import com.model.Producto;
 import com.util.HibernateUtil;
 import java.util.List;
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 public class ProductoDaoImp implements ProductoDao{
@@ -107,6 +108,32 @@ public class ProductoDaoImp implements ProductoDao{
                 session.close();
             }
         }
+    }
+
+    @Override
+    public Producto obtenerProductoPorCodigoBarra(String codBarra) {
+        //Cadena con consulta HQL
+        String hql = "FROM Producto c  where c.codBarra LIKE :codBarra";
+        Session session = null;
+        Producto producto = null;
+        try{
+            //Abrimos una session de hibernate
+            session = HibernateUtil.getSessionFactory().openSession();
+            //Creamos la consulta 
+            Query q = session.createQuery(hql);
+            //pasamos los parametros
+            q.setParameter("codBarra", codBarra);
+            //Ejecutamos la consulta
+            producto = (Producto) q.uniqueResult();
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            if(session != null){
+                session.close();
+            }
+        }
+        return producto;
     }
     
 }

@@ -13,4 +13,7 @@ public interface ProductoDao {
     public void updateProducto(Producto producto);
     //metodo que elimina una instancia de Producto
     public void deleteProducto(Producto producto);
+    
+    //Metodo utilizado en 'FacturaController.java'
+    public Producto obtenerProductoPorCodigoBarra(String codBarra);
 }
