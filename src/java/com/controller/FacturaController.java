@@ -88,8 +88,7 @@ public class FacturaController implements Serializable{
           //codigoCliente = null;  
         }catch(Exception e){
             e.printStackTrace();
-        }
-        
+        } 
     }
     
     //Metodo para solicitar la cantidad de Producto a Vender
