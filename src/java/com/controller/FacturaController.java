@@ -16,7 +16,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 
 
 @Named(value = "facturaController")
@@ -34,6 +36,8 @@ public class FacturaController implements Serializable{
      private Integer cantidadProductoDlg;
     private String productoSeleccionado;
     private Factura  factura;
+    
+    private Long numeroFactura;
 
     //Constructor
     public FacturaController() {
@@ -118,6 +122,11 @@ public class FacturaController implements Serializable{
 
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Producto agregado al detalle!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
+            }else{
+                //Limpiamos la variable 'cantidadProducto'
+                cantidadProductoDlg = null;
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR , "Incorrecto", "La cantidad es incorrecta!");
+                FacesContext.getCurrentInstance().addMessage(null, message);
             }
 
         } catch (Exception e) {
@@ -146,7 +155,8 @@ public class FacturaController implements Serializable{
                 RequestContext.getCurrentInstance().execute("PF('dialogCantidadProducto2').show();");
             } else {
                 codigoBarra = "";
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Producto No encontrado con ese Codigo de Barra");
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", 
+                        "Producto No encontrado con ese Codigo de Barra");
                 FacesContext.getCurrentInstance().addMessage(null, message);
             }
         } catch (Exception e) {
@@ -206,6 +216,66 @@ public class FacturaController implements Serializable{
         
     }
     
+    
+    //Metodo para retirar un producto del detalle de la factura
+    public void retirarProductoDetalleFactura(String codBarra,Integer rowIndex){
+        //Recorremos la Lista de detalle
+        int i =0;
+        for(Detallefactura det : listDetalle){
+            if(det.getCodBarra().equals(codBarra) && rowIndex.equals(i)){
+               listDetalle.remove(i);
+               break; //para que se salga inmediatamente del bucle
+            }
+            i++;
+        }
+        //Invocamos al metodo que calcula el Total de la Venta para la factura
+        totalFacturaVenta();
+        
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Informacion", 
+                                                 "Producto retirado del Detalle de la factura");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
+    //Metodo que responde al evento de modificacion de una fila en el <p:dataTable/>
+    public void rowEdit(RowEditEvent event){
+        //obtenemos la instancia de la Fila modificada 
+         Detallefactura detalle = (Detallefactura)event.getObject();
+        
+        //obtenemos el indice de la fila modificada
+        DataTable table = (DataTable) event.getSource();
+        Integer indice = table.getRowIndex();
+        
+        //Calculamos el nuevo total del producto
+        BigDecimal nuevoTotal = detalle.getPrecioVenta().multiply(new BigDecimal(detalle.getCantidad()));
+        //seteamos al detalle el nuevo total
+        //detalle.setTotal(nuevoTotal);
+        
+        //Recorremos la lista de Detalle y actualizamos el item correspondiente
+        int i =0;
+        for(Detallefactura det : listDetalle){
+            if(det.getCodBarra().equals(detalle.getCodBarra()) && indice.equals(i)){
+                //listDetalle.set(i, detalle);
+                listDetalle.get(i).setTotal(nuevoTotal);
+                break; //para que se salfa del for de manera inmediata
+            }
+            i++;
+        }
+        
+        totalFacturaVenta();
+        System.out.println("TOTAL: "+ factura.getTotalVenta());
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto"
+                                                  , "Producto: Cantidad de producto Modificado");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
+    public void cancelRowEdit(RowEditEvent event){
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "No Modificado"
+                                                  , "Producto: Cantidad de producto No Modificado");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
+    
+    //Metodo que permite generar el numero de Factura
     
     
     //Getters y Setters
@@ -280,6 +350,14 @@ public class FacturaController implements Serializable{
 
     public void setCantidadProductoDlg(Integer cantidadProductoDlg) {
         this.cantidadProductoDlg = cantidadProductoDlg;
+    }
+
+    public Long getNumeroFactura() {
+        return numeroFactura;
+    }
+
+    public void setNumeroFactura(Long numeroFactura) {
+        this.numeroFactura = numeroFactura;
     }
          
 }

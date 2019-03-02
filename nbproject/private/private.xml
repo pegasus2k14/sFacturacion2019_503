@@ -5,11 +5,12 @@
         <group>
             <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/impl/ClienteDaoImp.java</file>
             <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/web/views/venta/factura.xhtml</file>
-            <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/model/Detallefactura.java</file>
+            <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/dao/FacturaDao.java</file>
             <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/dao/ProductoDao.java</file>
-            <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/controller/FacturaController.java</file>
+            <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/impl/FacturaDaoImp.java</file>
             <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/model/Producto.java</file>
             <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/impl/ProductoDaoImp.java</file>
+            <file>file:/C:/MisArchivos/practicasJava/sysFacturacion/src/java/com/controller/FacturaController.java</file>
         </group>
     </open-files>
 </project-private>
