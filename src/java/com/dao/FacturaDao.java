@@ -8,7 +8,9 @@ public interface FacturaDao {
       public Factura getMaxNumeroFactura();
       
       //Metodo que obtiene el numero de regstros existentes en la afctura
-      public long numeroRegistrosFactura();
-    
+      public Long numeroRegistrosFactura();
+      
+      //Metodo para guardar el registro en la tabla Factura de la BD
+      public boolean guardarFactura(Factura factura) throws Exception;
     
 }

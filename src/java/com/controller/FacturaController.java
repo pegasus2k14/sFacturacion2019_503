@@ -1,16 +1,22 @@
 package com.controller;
 
 import com.dao.ClienteDao;
+import com.dao.DetalleFacturaDao;
+import com.dao.FacturaDao;
 import com.dao.ProductoDao;
 import com.impl.ClienteDaoImp;
+import com.impl.DetalleFacturaDaoImp;
+import com.impl.FacturaDaoImp;
 import com.impl.ProductoDaoImp;
 import com.model.Cliente;
 import com.model.Detallefactura;
 import com.model.Factura;
 import com.model.Producto;
+import com.model.Vendedor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -38,12 +44,16 @@ public class FacturaController implements Serializable{
     private Factura  factura;
     
     private Long numeroFactura;
+    
+    private Vendedor vendedor;
 
     //Constructor
     public FacturaController() {
         this.factura = new Factura();
         listDetalle = new ArrayList<>(); //inicializamos la lista
         codigoBarra="";
+        this.vendedor = new Vendedor();
+        this.cliente = new Cliente();
     }
     
     
@@ -114,7 +124,15 @@ public class FacturaController implements Serializable{
                 listDetalle.add(new Detallefactura(null, this.producto.getCodBarra(),
                         this.producto.getNombreProducto(), cantidadProductoDlg, this.producto.getPrecioVenta(),
                         (this.producto.getPrecioVenta().multiply(new BigDecimal(cantidadProductoDlg)))));
-
+                
+                //Seteamos el producto al item del detalle
+                  //Accedemos al ultimo Item agregado a la lista
+                  listDetalle.get(listDetalle.size()-1).setCodProducto(producto);
+                  
+                //Seteamos la factura al item del detalle
+                  //Accedemos al ultimo Item agregado a la lista  
+                 // listDetalle.get(listDetalle.size()-1).setCodFactura(factura);
+                  
                 //Limpiamos la variable 'cantidadProducto'
                 cantidadProductoDlg = null;
                 //Invocamos al metodo que calcula el Total de la Venta para la factura
@@ -174,7 +192,15 @@ public class FacturaController implements Serializable{
             listDetalle.add(new Detallefactura(null, this.producto.getCodBarra(),
                     this.producto.getNombreProducto(), cantidadProducto, this.producto.getPrecioVenta(),
                     this.producto.getPrecioVenta().multiply(new BigDecimal(cantidadProducto))));
-
+            
+            //Seteamos el producto al item del detalle
+                  //Accedemos al ultimo Item agregado a la lista
+                  listDetalle.get(listDetalle.size()-1).setCodProducto(producto);
+                  
+                //Seteamos la factura al item del detalle
+                  //Accedemos al ultimo Item agregado a la lista  
+                 // listDetalle.get(listDetalle.size()-1).setCodFactura(factura);
+            
             cantidadProducto = null;
             //limpiamos la variable
             codigoBarra = "";
@@ -276,7 +302,72 @@ public class FacturaController implements Serializable{
     
     
     //Metodo que permite generar el numero de Factura
+    public void generarNumeroFacura(){
+        try{
+            FacturaDao facturaDao = new FacturaDaoImp();
+            //Comprobamos si hay registros en la tabla Factura de la BD
+            this.numeroFactura = facturaDao.numeroRegistrosFactura();
+            
+            //Si no hay registros hacemos el numero de factura igual a 1
+            if(numeroFactura <= 0 || numeroFactura == null){
+                numeroFactura = Long.valueOf("1");
+                this.factura.setNumeroFactura(this.numeroFactura.intValue());
+                this.factura.setTotalVenta(new BigDecimal(0));
+            }else{
+                //Recuperamos el ultimo registro que existe en la tabla Factura
+                Factura factura = facturaDao.getMaxNumeroFactura();
+                //Le pasamos a la variable local el numero de factura incrementado en 1
+                this.numeroFactura = Long.valueOf(factura.getNumeroFactura() + 1);
+                this.factura.setNumeroFactura(this.numeroFactura.intValue());
+                this.factura.setTotalVenta(new BigDecimal(0));
+            }
+            
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
     
+    //Metodo para cancelar (limpiar factura) una venta
+    public void cancelarFactura(){
+        this.cliente = new Cliente();
+        this.factura = new Factura();
+        this.listDetalle = new ArrayList<>();
+        this.numeroFactura = null;
+    }
+    
+    //Metodo para guardar la Venta
+    public void guardarVenta(){
+        //objeto vendedor estatico (manual)
+        this.vendedor.setCodVendedor(4);
+        try{
+            FacturaDao facturaDao = new FacturaDaoImp();
+            DetalleFacturaDao detfacturaDao = new DetalleFacturaDaoImp();
+            //Seteando datos a la factura
+            factura.setCodVendedor(vendedor);
+            factura.setCodCliente(cliente);
+            factura.setFechaRegistro(new Date());
+            
+            //Seteamos a cada Item del Detalle la factura
+            for(int i=0;i<listDetalle.size();i++){
+                listDetalle.get(i).setCodFactura(factura);
+            }
+            
+            //Seteamos a la Factura la Lista de Detalel
+            factura.setDetallefacturaList(listDetalle);
+            
+            //Guardamos la factura y su detalle
+            facturaDao.guardarFactura(factura);
+            cancelarFactura(); //para limpiar las variables
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto: ", "Factura Registrada");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }catch(Exception e){
+            e.printStackTrace();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: ", "Factura no pudo ser Registrada");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
     
     //Getters y Setters
 
@@ -358,6 +449,14 @@ public class FacturaController implements Serializable{
 
     public void setNumeroFactura(Long numeroFactura) {
         this.numeroFactura = numeroFactura;
+    }
+
+    public Vendedor getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
     }
          
 }

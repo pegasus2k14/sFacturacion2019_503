@@ -37,11 +37,11 @@ public class FacturaDaoImp  implements FacturaDao{
     }
 
     @Override
-    public long numeroRegistrosFactura() {
+    public Long numeroRegistrosFactura() {
         //Creamos la cadena con la consulta
         String hql = "select count(f) from Factura f";
         Session session = null;
-        long cantidad =0;
+        Long cantidad =null;
         try{
            //abrimos una 'Session' de hibernate y obtenemos una referencia a esta
           //mediante los metodos de la Clase 'HibernateUtil.java' creada previamente
@@ -49,7 +49,7 @@ public class FacturaDaoImp  implements FacturaDao{
           //creamos la consulta
           Query q = session.createQuery(hql);
           //Ejecutamos la consulta
-          cantidad = (long) q.uniqueResult();
+          cantidad = (Long) q.uniqueResult();
           return cantidad;        
         }catch(Exception e){
             e.printStackTrace();;
@@ -60,6 +60,36 @@ public class FacturaDaoImp  implements FacturaDao{
         }
         return cantidad;
                 
+    }
+
+    //Metodo para guardar la factura
+    @Override
+    public boolean guardarFactura(Factura factura) {
+          //Variable de tipo Session
+          Session session = null;
+          boolean resultado = false;
+        try{
+             //abrimos una 'Session' de hibernate y obtenemos una referencia a esta
+             //mediante los metodos de la Clase 'HibernateUtil.java' creada previamente
+             session = HibernateUtil.getSessionFactory().openSession();
+             //iniciamos una transaccion
+             session.beginTransaction();
+             //Persistimos la instancia de factura
+             session.save(factura);
+             //confirmamos la transaccion
+             session.getTransaction().commit();
+             resultado = true;
+        }catch(Exception e){
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        }finally{
+            if(session != null){
+                session.close();
+            }
+        }
+        
+       return resultado;
+        
     }
     
 }
