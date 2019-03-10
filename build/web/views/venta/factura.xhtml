@@ -20,6 +20,7 @@
                 <h:form>
                     <h:panelGrid width="900px" style="margin: 0 auto; background-color: lightgrey;">
                         <p:commandButton value="Nueva factura" actionListener="#{facturaController.generarNumeroFacura()}"
+                                         action="#{facturaController.enableButton()}"
                                          style="width: 150px; height: 35px;" update=":frmFactura"/>
                     </h:panelGrid>
                 </h:form>
@@ -32,14 +33,15 @@
                                 <h:panelGrid id="gridBuscarCliente" columns="5">
                                     <p:outputLabel value="Codigo cliente:" style="font-weight: bold"/>
                                     <p:inputText id="inputCodCliente" size="12" value="#{facturaController.codigoCliente}"
-                                                 converter="#{Integer}" converterMessage="El codigo debe ser numerico">
+                                                 converter="#{Integer}" converterMessage="El codigo debe ser numerico"
+                                                 disabled="#{!facturaController.enabled}">
                                         <p:ajax event="keyup" listener="#{facturaController.agregarDatosClienteText()}"
                                                 update="frmFactura:datosPersonalesCliente"/>
                                     </p:inputText>
                                     <p:commandButton value="..." oncomplete="PF('dialogCliente').show();" 
-                                                     update="frmFactura:dlgCliente"/>
+                                                     update="frmFactura:dlgCliente" disabled="#{!facturaController.enabled}"/>
                                     <p:outputLabel value="Fecha:" style="font-weight: bold"/>
-                                    <p:outputLabel value="Fecha del sistema"/>
+                                    <p:outputLabel value="#{facturaController.fechaSistema}"/>
                                 </h:panelGrid>
                                 <p:separator/>
                                 <h:panelGrid id="datosPersonalesCliente" columns="2">
@@ -64,12 +66,13 @@
                         <p:separator/>
                         <h:panelGrid id="gridBuscarProducto" columns="3">
                             <p:outputLabel value="Codigo de Barra:"/>
-                            <p:inputText id="inputCodProducto" size="12" value="#{facturaController.codigoBarra}">
+                            <p:inputText id="inputCodProducto" size="12" value="#{facturaController.codigoBarra}"
+                                         disabled="#{!facturaController.enabled}">
                                 <p:ajax event="keyup" listener="#{facturaController.obtenerCantidadProducto()}"
                                         update="frmFactura:dlgCantidadProducto2"/>
                             </p:inputText>
                             <p:commandButton value="..." oncomplete="PF('dialogProducto').show();" 
-                                             update="frmFactura:dlgProducto"/>
+                                             update="frmFactura:dlgProducto" disabled="#{!facturaController.enabled}"/>
                         </h:panelGrid>
                         <p:separator/>
                        
@@ -124,12 +127,16 @@
                         
                         <p:separator/>
                         <p:commandButton value="Gravar venta" style="width: 150px; height: 35px;"
-                                         actionListener="#{facturaController.guardarVenta()}" 
-                                         update="frmFactura" />
-                        <p:commandButton value="Imprimir" style="width: 150px; height: 35px;"/>
+                                         actionListener="#{facturaController.guardarVenta()}"
+                                         action="#{facturaController.disableButton()}"
+                                         update="frmFactura" disabled="#{!facturaController.enabled}"/>
+                        <p:commandButton value="Imprimir" style="width: 150px; height: 35px;" 
+                                         disabled="#{!facturaController.enabled}"/>
                         <p:commandButton value="Cancelar" actionListener="#{facturaController.cancelarFactura()}"
+                                         action="#{facturaController.disableButton()}"
                                          update="frmFactura"
-                                         style="width: 150px; height: 35px;"/>
+                                         style="width: 150px; height: 35px;"
+                                         disabled="#{!facturaController.enabled}"/>
                     </p:panel>
                     
                     <!-- Dialog de busqueda del cliente -->

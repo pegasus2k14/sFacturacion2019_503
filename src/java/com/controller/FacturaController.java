@@ -15,6 +15,8 @@ import com.model.Producto;
 import com.model.Vendedor;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +48,10 @@ public class FacturaController implements Serializable{
     private Long numeroFactura;
     
     private Vendedor vendedor;
+    
+    private boolean enabled;
+    
+    private String fechaSistema;
 
     //Constructor
     public FacturaController() {
@@ -369,8 +375,36 @@ public class FacturaController implements Serializable{
         }
     }
     
-    //Getters y Setters
+    //Metodos para Activar/Desactivar controles en la factura
+    
+     public boolean isEnabled() {
+        return enabled;
+    }
+     
+    public void enableButton(){
+        enabled = true;
+    } 
+    
+    public void disableButton(){
+        enabled = false;
+    }
+    
+    //Metodo Get para la variable fechaSistema
 
+    public String getFechaSistema() {
+        Date date = new Date();
+        DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        //Aplicamos el formato al objeto Date y el resultado se
+        //lo pasamos a la variable String
+        fechaSistema = formato.format(date);
+        
+        return fechaSistema;
+    }
+    
+    
+    
+    //Getters y Setters
+    
     public Cliente getCliente() {
         return cliente;
     }
