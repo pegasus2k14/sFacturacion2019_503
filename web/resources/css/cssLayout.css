@@ -1,8 +1,15 @@
-
 #divGeneral{
     margin: 0 auto;
     width: 1200px;
 }
+#sesionUsuario{
+    color: black;
+    font-weight: bold;
+    position: absolute;
+    right: 25px;
+    bottom:45px;
+}
+
 
 #MenuPrincipal{
   margin-top: 20px;

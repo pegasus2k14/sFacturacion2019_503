@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.clasesauxilaires.ReporteFactura;
 import com.dao.ClienteDao;
 import com.dao.DetalleFacturaDao;
 import com.dao.FacturaDao;
@@ -24,6 +25,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
@@ -34,6 +37,7 @@ import org.primefaces.event.RowEditEvent;
 public class FacturaController implements Serializable{
     //Variables
     private Cliente cliente;
+    private Cliente clienteTMP;
     private Integer codigoCliente;
     private Producto producto;
     private String codigoBarra;
@@ -44,6 +48,7 @@ public class FacturaController implements Serializable{
      private Integer cantidadProductoDlg;
     private String productoSeleccionado;
     private Factura  factura;
+    private Factura facturaTMP;
     
     private Long numeroFactura;
     
@@ -51,7 +56,14 @@ public class FacturaController implements Serializable{
     
     private boolean enabled;
     
+    private boolean enabledPrint;
+    
     private String fechaSistema;
+    
+    //Inyectamos el ManagedBean 'LoginController.java' para poder
+    //luego acceder a su propiedad 'usuario'
+    @Inject
+    private LoginController loginController;
 
     //Constructor
     public FacturaController() {
@@ -60,6 +72,9 @@ public class FacturaController implements Serializable{
         codigoBarra="";
         this.vendedor = new Vendedor();
         this.cliente = new Cliente();
+        
+        this.clienteTMP = new Cliente();
+        this.facturaTMP = new Factura();
     }
     
     
@@ -345,8 +360,9 @@ public class FacturaController implements Serializable{
     
     //Metodo para guardar la Venta
     public void guardarVenta(){
-        //objeto vendedor estatico (manual)
-        this.vendedor.setCodVendedor(4);
+        //a partir de la propiedad 'usuario' del ManagedBean 'LoginController' recuperamos
+        //el codigo del vendedor y se lo seteamos al objeto Vendedor local
+        this.vendedor.setCodVendedor(loginController.getUsuario().getCodVendedor().getCodVendedor());
         try{
             FacturaDao facturaDao = new FacturaDaoImp();
             DetalleFacturaDao detfacturaDao = new DetalleFacturaDaoImp();
@@ -365,6 +381,11 @@ public class FacturaController implements Serializable{
             
             //Guardamos la factura y su detalle
             facturaDao.guardarFactura(factura);
+            //Guardamos la factura y el cliente en objetos Temporales
+            //para poder luego usarlos en la impresion de la factura
+            facturaTMP = factura;
+            clienteTMP = cliente;
+            
             cancelarFactura(); //para limpiar las variables
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto: ", "Factura Registrada");
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -389,6 +410,19 @@ public class FacturaController implements Serializable{
         enabled = false;
     }
     
+    //Metodos para activar/ desactivar el control de impresion de la factura
+
+    public boolean isEnabledPrint() {
+        return enabledPrint;
+    }
+    
+    public void enablePrintButton(){
+        enabledPrint =true;
+    }
+    
+    public void disablePrintButton(){
+        enabledPrint = false;
+    }
     //Metodo Get para la variable fechaSistema
 
     public String getFechaSistema() {
@@ -402,8 +436,50 @@ public class FacturaController implements Serializable{
     }
     
     
+    //Metodo para invocar el reporte y pasarle los parametrod
+    public void verReporte(){
+        //Guardamos en variables los valores de los parametros que pasaremos al reporte
+        int cc = this.clienteTMP.getCodCliente();
+        int cv = this.vendedor.getCodVendedor();
+        int cf = this.facturaTMP.getCodFactura();
+        
+        System.out.println("Codigo cliente: "+cc);
+        System.out.println("Codigo vendedor: "+cv);
+        System.out.println("Codigo factura: "+cf);
+        
+        //obtenemos la ruta en el sistema de archivos del archivo .jasper a
+        //partir de la ruta relativa en el proyecto
+            //Obtenemos el contexto de la aplicacion y lo depositamos en una variable
+            //ServletContext
+            ServletContext servletContext = 
+                    (ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext();
+        
+        String rutaReporte = servletContext.getRealPath("/reportes/factura503.jasper");
+        System.out.println("Ruta del reporte: "+rutaReporte);
+        //Limpiamos la variables Temporales
+        clienteTMP = new Cliente();
+        facturaTMP = new Factura();
+        
+        //Creamos el reporte
+        ReporteFactura.createReport(rutaReporte, cc, cv, cf);
+        //exportamos el reporte a PDF
+        ReporteFactura.exportReportToPdfWeb();
+        
+        //Cerramos el contexto
+        FacesContext.getCurrentInstance().responseComplete();
+        
+    }
+    
     
     //Getters y Setters
+    
+    public LoginController getLoginController() {
+        return loginController;
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
+    }
     
     public Cliente getCliente() {
         return cliente;
@@ -492,5 +568,6 @@ public class FacturaController implements Serializable{
     public void setVendedor(Vendedor vendedor) {
         this.vendedor = vendedor;
     }
-         
+
+     
 }

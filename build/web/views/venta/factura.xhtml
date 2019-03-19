@@ -21,7 +21,9 @@
                     <h:panelGrid width="900px" style="margin: 0 auto; background-color: lightgrey;">
                         <p:commandButton value="Nueva factura" actionListener="#{facturaController.generarNumeroFacura()}"
                                          action="#{facturaController.enableButton()}"
-                                         style="width: 150px; height: 35px;" update=":frmFactura"/>
+                                         style="width: 150px; height: 35px;" update=":frmFactura">
+                            <f:actionListener binding="#{facturaController.disablePrintButton()}"/>
+                        </p:commandButton>
                     </h:panelGrid>
                 </h:form>
                 <h:form id="frmFactura">
@@ -129,14 +131,22 @@
                         <p:commandButton value="Gravar venta" style="width: 150px; height: 35px;"
                                          actionListener="#{facturaController.guardarVenta()}"
                                          action="#{facturaController.disableButton()}"
-                                         update="frmFactura" disabled="#{!facturaController.enabled}"/>
-                        <p:commandButton value="Imprimir" style="width: 150px; height: 35px;" 
-                                         disabled="#{!facturaController.enabled}"/>
+                                         update="frmFactura" disabled="#{!facturaController.enabled}">
+                            <f:actionListener binding="#{facturaController.enablePrintButton()}"/>
+                        </p:commandButton>
+                        
+                       <p:commandButton value="Imprimir" style="width: 150px; height: 35px;" ajax="false"
+                                         actionListener="#{facturaController.verReporte()}" 
+                                         onclick="this.form.target='_blank'"
+                                         disabled="#{!facturaController.enabledPrint}"/>
+                        
                         <p:commandButton value="Cancelar" actionListener="#{facturaController.cancelarFactura()}"
                                          action="#{facturaController.disableButton()}"
                                          update="frmFactura"
                                          style="width: 150px; height: 35px;"
-                                         disabled="#{!facturaController.enabled}"/>
+                                         disabled="#{!facturaController.enabled}">
+                            <f:actionListener binding="#{facturaController.disablePrintButton()}"/>
+                        </p:commandButton>
                     </p:panel>
                     
                     <!-- Dialog de busqueda del cliente -->

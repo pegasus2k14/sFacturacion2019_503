@@ -22,12 +22,22 @@
 
                 <div id="MenuPrincipal">
                     <!--Componente Barra de Menu -->
+                    <div id="sesionUsuario">
+                        <span>
+                            <h:form>
+                                <p:outputLabel value="Hola, "/>
+                                <p:outputLabel value="#{loginController.usuario.codVendedor.nombres} 
+                                               #{loginController.usuario.codVendedor.apellidos} "/>
+                                <p:commandButton id="cerrarSesion" value="Salir" action="#{loginController.closeSession()}"/>
+                            </h:form>
+                        </span>
+                    </div>
                     <h:form>  
                         <p:menubar>
                             <p:submenu label="Home" >
                                 <p:menuitem value="Inicio" outcome="/views/bienvenido" />
                                 <p:separator />
-                                <p:menuitem value="Salir" outcome="/index" />
+                                <p:menuitem value="Salir" action="#{loginController.closeSession()}" />
                             </p:submenu>
 
                             <p:submenu label="Cliente">

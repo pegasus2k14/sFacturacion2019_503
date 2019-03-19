@@ -16,30 +16,31 @@
                 if (args.validationFailed || !args.loggedIn) {
                     PF('dlg').jq.effect("shake", {times: 5}, 100);
                 } else {
-                    PF('dlg').hide();
-                    $('#loginLink').fadeOut();
+                   location.href = args.ruta;
                 }
             }
         </script>
-
-
-        <h:form>
+        
+        <h:form id="frmLogin">
             <div class="login">
                 <p:growl id="msgGeneral" sticky="true" showDetail="true" life="3000" />
 
                 <p:panel header="sistema de facturacion 503" widgetVar="dlg">
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputLabel for="usuario" value="Usario:" />
-                        <p:inputText id="usuario" value="#{userLoginView.username}" placeholder="Usuario" 
-                                     required="true" label="username" />
+                        <p:inputText id="usuario" value="#{loginController.usuario.nombreUsuario}" placeholder="Usuario" 
+                                     required="true" label="Nombre de usuario" 
+                                     requiredMessage="Escriba el usuario por favor"/>
 
                         <h:outputLabel for="password" value="Password:" />
-                        <p:password id="password" value="#{userLoginView.password}" placeholder="Password" 
-                                    required="true" label="password" />
+                        <p:password id="password" value="#{loginController.usuario.password}" placeholder="Password" 
+                                    required="true" label="password" 
+                                    requiredMessage="Escriba el Password por favor"/>
 
                         <f:facet name="footer">
-                            <p:commandButton value="Login" update="msgGeneral" action="#{userLoginView.login}"
-                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                            <p:commandButton value="Login" update="frmLogin" 
+                                             action="#{loginController.login()}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)"/>
                         </f:facet>  
                     </h:panelGrid>
                 </p:panel>
