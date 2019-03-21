@@ -152,9 +152,8 @@ detallefactura.codFactura = $P{codFactura}]]>
 				<reportElement x="0" y="69" width="100" height="17" uuid="c8d45d3d-3aca-4b35-9be0-06bff32a3e93">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4e7d0c3-0f30-4265-89ff-50daa3f519d5"/>
 				</reportElement>
-				<textElement markup="styled">
+				<textElement>
 					<font size="10" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
